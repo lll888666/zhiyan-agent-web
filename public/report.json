@@ -1,0 +1,56 @@
+{
+  "paper_title": "Deep Learning for Scientific Writing Assistance",
+  "summary": "该论文结构清晰、实验设置完整，但在学术表达精确性、术语统一与因果论证严谨性上仍有提升空间。优化后文本在保持原意前提下，显著提升了可读性与学术规范性。",
+  "polished_text": "We propose an intelligent writing-assistance framework for scientific manuscripts. The framework combines terminology normalization, discourse-level coherence modeling, and evidence-aware sentence rewriting. Extensive experiments on interdisciplinary paper drafts demonstrate consistent gains in clarity, logical flow, and reviewer-perceived quality. Ablation studies further confirm that evidence-aware rewriting contributes most to argumentative rigor.",
+  "revision_items": [
+    {
+      "original": "This method is very good and can improve many papers.",
+      "revised": "This method consistently improves manuscript quality across multiple evaluation dimensions.",
+      "edit_type": "Academic tone refinement",
+      "reason": "避免口语化表达，提升学术客观性与可检验性。",
+      "learnable_rule": "将主观形容词替换为可量化或可验证描述。"
+    },
+    {
+      "original": "We use lots of datasets to test it.",
+      "revised": "We evaluate the method on diverse benchmark datasets spanning multiple domains.",
+      "edit_type": "Precision enhancement",
+      "reason": "“lots of”语义模糊，替换为更精确表述。",
+      "learnable_rule": "避免模糊量词，优先使用可界定范围的术语。"
+    },
+    {
+      "original": "The model works better because it is smarter.",
+      "revised": "The model outperforms baselines primarily due to its evidence-aware rewriting module.",
+      "edit_type": "Causal clarification",
+      "reason": "补充因果机制，减少不严谨归因。",
+      "learnable_rule": "结论需对应机制或证据，避免循环论证。"
+    }
+  ],
+  "risk_items": [
+    {
+      "title": "因果推断证据不足",
+      "severity": "高",
+      "evidence_text": "The model works better because it is smarter.",
+      "explanation": "该表述缺乏可验证机制，可能被审稿人质疑为主观归因。",
+      "suggestion": "补充消融实验和模块贡献分析，明确性能提升来源。"
+    },
+    {
+      "title": "术语一致性风险",
+      "severity": "中",
+      "evidence_text": "method / framework / system 混用",
+      "explanation": "术语切换频繁会削弱论文的专业性和可读性。",
+      "suggestion": "统一核心术语并在引言首次出现时给出明确定义。"
+    },
+    {
+      "title": "表达过度绝对化",
+      "severity": "中",
+      "evidence_text": "always significantly better",
+      "explanation": "绝对化措辞在统计不充分时存在被反驳风险。",
+      "suggestion": "改为条件化表达，并附置信区间或显著性检验结果。"
+    }
+  ],
+  "priority_actions": [
+    "补充关键模块消融实验，完善因果链条证据。",
+    "统一全文核心术语（method/framework/system）的使用规范。",
+    "将绝对化结论改为基于统计显著性的谨慎表达。"
+  ]
+}

@@ -1,0 +1,134 @@
+.risk-subtitle {
+  margin-top: 10px;
+  color: #425974;
+  font-weight: 500;
+}
+
+.risk-filter-row {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.risk-filter-row label {
+  color: #2f4867;
+  font-weight: 600;
+}
+
+.risk-filter-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.risk-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.risk-stat-item {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 14px;
+  background: linear-gradient(180deg, #ffffff 0%, #f9fbff 100%);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.risk-stat-item:hover {
+  transform: translateY(-1px);
+  border-color: var(--line-strong);
+}
+
+.risk-stat-item h3 {
+  margin: 0 0 6px;
+  font-size: 0.95rem;
+  color: #2a4564;
+}
+
+.risk-stat-item p {
+  margin: 0;
+  font-size: 1.38rem;
+  font-weight: 700;
+}
+
+.risk-stat-high p {
+  color: #b94545;
+}
+
+.risk-stat-medium p {
+  color: #ce7b2d;
+}
+
+.risk-stat-low p {
+  color: #2f8a56;
+}
+
+.risk-radar-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.risk-radar-card {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 14px;
+  background: linear-gradient(180deg, #ffffff 0%, #f9fbff 100%);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+}
+
+.risk-radar-card:hover {
+  transform: translateY(-1px);
+  border-color: var(--line-strong);
+  box-shadow: var(--shadow-sm);
+}
+
+.risk-radar-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.risk-radar-head h3 {
+  margin: 0;
+  font-size: 1rem;
+  color: #1f3c5c;
+}
+
+.severity-pill {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.severity-pill-high {
+  background: #c74444;
+}
+
+.severity-pill-medium {
+  background: #d78736;
+}
+
+.severity-pill-low {
+  background: #2f8a56;
+}
+
+.severity-pill-unknown {
+  background: #607d8b;
+}
+
+@media (max-width: 820px) {
+  .risk-stats-grid {
+    grid-template-columns: 1fr;
+  }
+}

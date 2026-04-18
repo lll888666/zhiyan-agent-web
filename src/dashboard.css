@@ -66,3 +66,47 @@
   color: #324c6d;
   font-weight: 600;
 }
+
+.paste-json-section {
+  margin-top: 14px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: linear-gradient(180deg, #fbfdff 0%, #f6f9ff 100%);
+}
+
+.paste-json-hint {
+  margin: 0;
+  color: #4c5f79;
+  font-size: 0.9rem;
+  line-height: 1.65;
+}
+
+.paste-json-textarea {
+  margin-top: 10px;
+  width: 100%;
+  border: 1px solid #c8d6e8;
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: #132f4e;
+  background: #fff;
+  font: inherit;
+  line-height: 1.6;
+  resize: vertical;
+  min-height: 140px;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.paste-json-textarea:focus {
+  outline: none;
+  border-color: #93aed0;
+  box-shadow: 0 0 0 3px rgba(147, 174, 208, 0.18);
+}
+
+.paste-json-actions {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}

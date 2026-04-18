@@ -1,7 +1,7 @@
 import { useRef, useState, type ChangeEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { useReportData } from './context/ReportDataContext';
-import { validateReportData } from './report-data';
+import { parseReportData } from './report-data';
 import UnifiedPageHeader from './components/UnifiedPageHeader';
 import './dashboard.css';
 
@@ -39,10 +39,37 @@ function DashboardPage() {
     message: '',
   });
   const [selectedFileName, setSelectedFileName] = useState('');
+  const [pastedJson, setPastedJson] = useState('');
+  const [pasteError, setPasteError] = useState('');
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleSelectFile = () => {
     fileInputRef.current?.click();
+  };
+
+  // 统一处理导入后的状态更新，供“文件上传”和“粘贴 JSON”复用。
+  const applyJsonToReport = (rawText: string, sourceLabel: string, showErrorInGlobalStatus = true) => {
+    try {
+      const parsedJson = JSON.parse(rawText) as unknown;
+      const result = parseReportData(parsedJson);
+
+      if (!result.ok) {
+        if (showErrorInGlobalStatus) {
+          setImportStatus({ type: 'error', message: `JSON 格式错误：${result.message}` });
+        }
+        return false;
+      }
+
+      setReportData(result.data);
+      const warningMessage = result.warnings[0] ? `；${result.warnings[0]}` : '';
+      setImportStatus({ type: 'success', message: `${sourceLabel}导入成功${warningMessage}` });
+      return true;
+    } catch {
+      if (showErrorInGlobalStatus) {
+        setImportStatus({ type: 'error', message: 'JSON 格式错误：内容不是合法 JSON，请检查后重试。' });
+      }
+      return false;
+    }
   };
 
   const handleImportFile = async (event: ChangeEvent<HTMLInputElement>) => {
@@ -52,22 +79,33 @@ function DashboardPage() {
 
     try {
       const rawText = await file.text();
-      const parsedJson = JSON.parse(rawText) as unknown;
-      const result = validateReportData(parsedJson);
-
-      if (!result.ok) {
-        setImportStatus({ type: 'error', message: `JSON 格式错误：${result.message}` });
-        event.target.value = '';
-        return;
-      }
-
-      setReportData(result.data);
-      setImportStatus({ type: 'success', message: `导入成功：${file.name}` });
+      setPasteError('');
+      applyJsonToReport(rawText, `文件「${file.name}」`);
       event.target.value = '';
     } catch {
       setImportStatus({ type: 'error', message: 'JSON 格式错误：文件内容不是合法 JSON，请检查后重试。' });
       event.target.value = '';
     }
+  };
+
+  const handleParsePastedJson = () => {
+    const trimmed = pastedJson.trim();
+    if (!trimmed) {
+      setPasteError('请输入 JSON 内容');
+      return;
+    }
+
+    const success = applyJsonToReport(trimmed, '粘贴内容', false);
+    if (success) {
+      setPasteError('');
+    } else {
+      setPasteError('粘贴内容解析失败，请检查 JSON 格式后重试。');
+    }
+  };
+
+  const handleClearPastedJson = () => {
+    setPastedJson('');
+    setPasteError('');
   };
 
   return (
@@ -101,6 +139,25 @@ function DashboardPage() {
             {importStatus.type !== 'idle' ? (
               <p className={`status-message status-${importStatus.type}`}>{importStatus.message}</p>
             ) : null}
+            <section className="paste-json-section" aria-label="粘贴 JSON 并解析">
+              <p className="paste-json-hint">若无法通过链接自动打开，可将智能体返回的 JSON 粘贴到此处直接解析。</p>
+              <textarea
+                className="paste-json-textarea"
+                value={pastedJson}
+                onChange={(event) => setPastedJson(event.target.value)}
+                placeholder='请粘贴完整 JSON，例如：{"paper_title":"...","summary":"..."}'
+                rows={8}
+              />
+              <div className="paste-json-actions">
+                <button type="button" className="import-btn" onClick={handleParsePastedJson}>
+                  解析粘贴的 JSON
+                </button>
+                <button type="button" className="import-btn" onClick={handleClearPastedJson}>
+                  清空
+                </button>
+              </div>
+              {pasteError ? <p className="status-message status-error">{pasteError}</p> : null}
+            </section>
             <p className="dashboard-current-data">
               当前报告：{reportData ? reportData.paper_title : '暂无，请先导入 JSON'}
             </p>

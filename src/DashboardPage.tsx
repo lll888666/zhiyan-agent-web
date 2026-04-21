@@ -123,6 +123,14 @@ function DashboardPage() {
         ]}
         actions={
           <>
+            <a
+              className="agent-chat-btn"
+              href="https://adp.cloud.tencent.com/webim_exp/#/chat/UcfXYx"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              返回智能体
+            </a>
             <div className="import-row">
               <button type="button" className="import-btn" onClick={handleSelectFile}>
                 导入报告 JSON

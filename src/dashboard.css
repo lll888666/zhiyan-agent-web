@@ -67,6 +67,26 @@
   font-weight: 600;
 }
 
+.agent-chat-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+  border: 1px solid #0f5fad;
+  background: linear-gradient(180deg, #2c86df 0%, #196ec6 100%);
+  color: #ffffff;
+  border-radius: 999px;
+  padding: 9px 16px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 6px 14px rgba(25, 110, 198, 0.28);
+}
+
+.agent-chat-btn:hover {
+  filter: brightness(1.03);
+}
+
 .paste-json-section {
   margin-top: 14px;
   padding: 12px;

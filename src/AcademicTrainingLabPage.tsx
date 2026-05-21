@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { motion } from 'framer-motion';
 import {
   errorCaseList,
   trainingFaqList,
@@ -41,6 +42,7 @@ function AcademicTrainingLabPage() {
   }, [quizAnswers]);
 
   const answeredCount = useMemo(() => Object.keys(quizAnswers).length, [quizAnswers]);
+  const scorePercent = Math.round((score / trainingQuizList.length) * 100);
 
   const toggleAnswer = (index: number) => {
     setExpandedMap((prev) => ({ ...prev, [index]: !prev[index] }));
@@ -54,8 +56,23 @@ function AcademicTrainingLabPage() {
     setQuizAnswers({});
   };
 
+  const listVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { staggerChildren: 0.08 } },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+  };
+
   return (
-    <main className="container">
+    <motion.main
+      className="container"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+    >
       <UnifiedPageHeader
         tag="Academic Training Lab"
         title="科研规范训练场"
@@ -121,11 +138,11 @@ function AcademicTrainingLabPage() {
             ))}
           </div>
 
-          <div className="qa-list">
+          <motion.div className="qa-list" variants={listVariants} initial="hidden" animate="visible">
             {filteredFaq.map(({ item, index }) => {
               const expanded = expandedMap[index] ?? false;
               return (
-                <article key={`${item.question}-${index}`} className="qa-card">
+                <motion.article key={`${item.question}-${index}`} className="qa-card" variants={itemVariants}>
                   <div className="qa-card-head">
                     <div>
                       <p className="qa-category">{item.category}</p>
@@ -136,10 +153,10 @@ function AcademicTrainingLabPage() {
                     </button>
                   </div>
                   {expanded ? <p className="qa-answer">{item.answer}</p> : null}
-                </article>
+                </motion.article>
               );
             })}
-          </div>
+          </motion.div>
         </section>
       ) : null}
 
@@ -150,9 +167,9 @@ function AcademicTrainingLabPage() {
             <p>{errorCaseList.length} 个典型案例</p>
           </div>
 
-          <div className="case-grid">
+          <motion.div className="case-grid" variants={listVariants} initial="hidden" animate="visible">
             {errorCaseList.map((item, index) => (
-              <article key={`case-${index}`} className="case-card">
+              <motion.article key={`case-${index}`} className="case-card" variants={itemVariants}>
                 <h3>案例 {index + 1}</h3>
 
                 <div className="case-block case-block-wrong">
@@ -174,9 +191,9 @@ function AcademicTrainingLabPage() {
                   <strong>对应规则：</strong>
                   {item.related_rule}
                 </p>
-              </article>
+              </motion.article>
             ))}
-          </div>
+          </motion.div>
         </section>
       ) : null}
 
@@ -189,14 +206,14 @@ function AcademicTrainingLabPage() {
             </p>
           </div>
 
-          <div className="quiz-list">
+          <motion.div className="quiz-list" variants={listVariants} initial="hidden" animate="visible">
             {trainingQuizList.map((item, questionIndex) => {
               const selected = quizAnswers[questionIndex];
               const answered = selected !== undefined;
               const isCorrect = answered && selected === item.correct_answer;
 
               return (
-                <article key={`quiz-${questionIndex}`} className="quiz-card">
+                <motion.article key={`quiz-${questionIndex}`} className="quiz-card" variants={itemVariants}>
                   <h3>
                     {questionIndex + 1}. {item.question}
                   </h3>
@@ -223,22 +240,25 @@ function AcademicTrainingLabPage() {
                       </p>
                     </div>
                   ) : null}
-                </article>
+                </motion.article>
               );
             })}
-          </div>
+          </motion.div>
 
           <div className="quiz-footer">
             <p className="quiz-score">
               当前得分：{score} / {trainingQuizList.length}
             </p>
+            <div className="quiz-progress" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={scorePercent}>
+              <span className="quiz-progress-fill" style={{ width: `${scorePercent}%` }} />
+            </div>
             <button type="button" className="import-btn" onClick={handleResetQuiz}>
               重新开始挑战
             </button>
           </div>
         </section>
       ) : null}
-    </main>
+    </motion.main>
   );
 }
 

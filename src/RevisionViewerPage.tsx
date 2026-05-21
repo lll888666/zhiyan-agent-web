@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { motion } from 'framer-motion';
 import { useReportData } from './context/ReportDataContext';
 import UnifiedPageHeader from './components/UnifiedPageHeader';
 
@@ -30,7 +31,12 @@ function RevisionViewerPage() {
 
   if (!reportData) {
     return (
-      <main className="container">
+      <motion.main
+        className="container"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+      >
         <UnifiedPageHeader
           tag="Revision Viewer"
           title="可解释润色查看器"
@@ -39,7 +45,7 @@ function RevisionViewerPage() {
         <section className="panel">
           <p className="empty-state">当前没有可展示的报告数据，请先返回首页导入报告 JSON。</p>
         </section>
-      </main>
+      </motion.main>
     );
   }
 
@@ -66,8 +72,23 @@ function RevisionViewerPage() {
     setExpandedMap((prev) => ({ ...prev, [idx]: !prev[idx] }));
   };
 
+  const listVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { staggerChildren: 0.08 } },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+  };
+
   return (
-    <main className="container">
+    <motion.main
+      className="container"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+    >
       <UnifiedPageHeader
         tag="Revision Viewer"
         title="可解释润色查看器"
@@ -101,13 +122,13 @@ function RevisionViewerPage() {
         {filteredEntries.length === 0 ? (
           <p className="empty-state">当前条件下没有可展示的润色条目。</p>
         ) : (
-          <div className="revision-list">
+          <motion.div className="revision-list" variants={listVariants} initial="hidden" animate="visible">
             {filteredEntries.map(({ item, index }) => {
               const isExpanded = expandedMap[index] ?? true;
               const editTypeLabel = getEditTypeLabel(item.edit_type);
 
               return (
-                <article key={`${item.original}-${index}`} className="revision-card">
+                <motion.article key={`${item.original}-${index}`} className="revision-card" variants={itemVariants}>
                   <div className="card-head">
                     <h3>修改条目 {index + 1}</h3>
                     <div className="card-head-right">
@@ -149,13 +170,13 @@ function RevisionViewerPage() {
                       </div>
                     </>
                   ) : null}
-                </article>
+                </motion.article>
               );
             })}
-          </div>
+          </motion.div>
         )}
       </section>
-    </main>
+    </motion.main>
   );
 }
 

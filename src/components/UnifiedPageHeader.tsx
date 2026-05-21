@@ -34,7 +34,10 @@ function UnifiedPageHeader({
         ) : null}
       </div>
 
-      <h1>{title}</h1>
+      <h1 className="page-title-row">
+        <span className="led led-purple" aria-hidden="true" />
+        {title}
+      </h1>
       {subtitle ? <p className="page-subtitle">{subtitle}</p> : null}
 
       {links.length > 0 ? (

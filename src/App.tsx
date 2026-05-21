@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { motion } from 'framer-motion';
 import { useReportData } from './context/ReportDataContext';
 import UnifiedPageHeader from './components/UnifiedPageHeader';
 
@@ -33,7 +34,12 @@ function App() {
 
   if (!data) {
     return (
-      <main className="container">
+      <motion.main
+        className="container"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+      >
         <UnifiedPageHeader
           tag="Paper Optimization Report"
           title="科研论文智能优化报告"
@@ -42,7 +48,7 @@ function App() {
         <section className="panel">
           <p className="empty-state">当前没有可展示的报告数据，请先返回首页导入报告 JSON。</p>
         </section>
-      </main>
+      </motion.main>
     );
   }
 
@@ -72,8 +78,23 @@ function App() {
     window.print();
   };
 
+  const listVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { staggerChildren: 0.08 } },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+  };
+
   return (
-    <main className="container">
+    <motion.main
+      className="container"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+    >
       <UnifiedPageHeader
         tag="Paper Optimization Report"
         title={data.paper_title}
@@ -103,24 +124,24 @@ function App() {
 
       <section className="panel">
         <h2>报告总览</h2>
-        <div className="overview-grid">
-          <article className="overview-item">
+        <motion.div className="overview-grid" variants={listVariants} initial="hidden" animate="visible">
+          <motion.article className="overview-item" variants={itemVariants}>
             <h3>总体状态</h3>
             <p>{overviewStatus}</p>
-          </article>
-          <article className="overview-item">
+          </motion.article>
+          <motion.article className="overview-item" variants={itemVariants}>
             <h3>高风险问题数</h3>
             <p>{highRiskCount}</p>
-          </article>
-          <article className="overview-item">
+          </motion.article>
+          <motion.article className="overview-item" variants={itemVariants}>
             <h3>中风险问题数</h3>
             <p>{mediumRiskCount}</p>
-          </article>
-          <article className="overview-item">
+          </motion.article>
+          <motion.article className="overview-item" variants={itemVariants}>
             <h3>优先处理建议</h3>
             <p>{topPriority}</p>
-          </article>
-        </div>
+          </motion.article>
+        </motion.div>
       </section>
 
       <section className="panel">
@@ -197,9 +218,9 @@ function App() {
             </button>
           </div>
         </div>
-        <div className="risk-grid">
+        <motion.div className="risk-grid" variants={listVariants} initial="hidden" animate="visible">
           {filteredRiskItems.map((risk, idx) => (
-            <article key={idx} className="risk-card">
+            <motion.article key={idx} className="risk-card" variants={itemVariants}>
               <div className="risk-head">
                 <h3>{risk.title}</h3>
                 <span className={`severity severity-${normalizeSeverity(risk.severity)}`}>{severityText(risk.severity)}</span>
@@ -213,9 +234,9 @@ function App() {
               <p>
                 <strong>修改建议：</strong> {risk.suggestion}
               </p>
-            </article>
+            </motion.article>
           ))}
-        </div>
+        </motion.div>
         {filteredRiskItems.length === 0 ? <p className="empty-state">当前筛选条件下暂无风险项。</p> : null}
       </section>
 
@@ -227,7 +248,7 @@ function App() {
           ))}
         </ol>
       </section>
-    </main>
+    </motion.main>
   );
 }
 

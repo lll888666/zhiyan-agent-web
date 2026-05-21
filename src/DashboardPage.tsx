@@ -1,5 +1,6 @@
 import { useRef, useState, type ChangeEvent } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { useReportData } from './context/ReportDataContext';
 import { parseReportData } from './report-data';
 import UnifiedPageHeader from './components/UnifiedPageHeader';
@@ -173,17 +174,28 @@ function DashboardPage() {
         }
       />
 
-      <section className="dashboard-grid" aria-label="功能模块列表">
+      <motion.section
+        className="dashboard-grid"
+        aria-label="功能模块列表"
+        initial="hidden"
+        animate="visible"
+        variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.12 } } }}
+      >
         {MODULE_CARDS.map((card) => (
-          <article key={card.title} className="dashboard-card">
+          <motion.article
+            key={card.title}
+            className="dashboard-card"
+            variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 } }}
+            transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+          >
             <h2>{card.title}</h2>
             <p>{card.description}</p>
             <Link className="dashboard-enter" to={card.href}>
               {card.buttonText}
             </Link>
-          </article>
+          </motion.article>
         ))}
-      </section>
+      </motion.section>
     </main>
   );
 }

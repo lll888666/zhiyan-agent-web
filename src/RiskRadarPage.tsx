@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { motion } from 'framer-motion';
 import { useReportData } from './context/ReportDataContext';
 import UnifiedPageHeader from './components/UnifiedPageHeader';
 
@@ -33,7 +34,12 @@ function RiskRadarPage() {
 
   if (!data) {
     return (
-      <main className="container">
+      <motion.main
+        className="container"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+      >
         <UnifiedPageHeader
           tag="Risk Radar Panel"
           title="科研风险雷达面板"
@@ -42,7 +48,7 @@ function RiskRadarPage() {
         <section className="panel">
           <p className="empty-state">当前没有可展示的报告数据，请先返回首页导入报告 JSON。</p>
         </section>
-      </main>
+      </motion.main>
     );
   }
 
@@ -64,8 +70,32 @@ function RiskRadarPage() {
     return data.risk_items.filter((item) => normalizeSeverity(item.severity) === filter);
   }, [data.risk_items, filter]);
 
+  const severityRatioMap = useMemo(() => {
+    const total = data.risk_items.length || 1;
+    return {
+      high: (highCount / total) * 100,
+      medium: (mediumCount / total) * 100,
+      low: (lowCount / total) * 100,
+    };
+  }, [data.risk_items.length, highCount, mediumCount, lowCount]);
+
+  const listVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { staggerChildren: 0.08 } },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+  };
+
   return (
-    <main className="container">
+    <motion.main
+      className="container"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+    >
       <UnifiedPageHeader
         tag="Risk Radar Panel"
         title="科研风险雷达面板"
@@ -95,20 +125,20 @@ function RiskRadarPage() {
       />
 
       <section className="panel">
-        <div className="risk-stats-grid">
-          <article className="risk-stat-item risk-stat-high">
+        <motion.div className="risk-stats-grid" variants={listVariants} initial="hidden" animate="visible">
+          <motion.article className="risk-stat-item risk-stat-high" variants={itemVariants}>
             <h3>高风险数量</h3>
             <p>{highCount}</p>
-          </article>
-          <article className="risk-stat-item risk-stat-medium">
+          </motion.article>
+          <motion.article className="risk-stat-item risk-stat-medium" variants={itemVariants}>
             <h3>中风险数量</h3>
             <p>{mediumCount}</p>
-          </article>
-          <article className="risk-stat-item risk-stat-low">
+          </motion.article>
+          <motion.article className="risk-stat-item risk-stat-low" variants={itemVariants}>
             <h3>低风险数量</h3>
             <p>{lowCount}</p>
-          </article>
-        </div>
+          </motion.article>
+        </motion.div>
       </section>
 
       <section className="panel">
@@ -117,14 +147,18 @@ function RiskRadarPage() {
             {data.risk_items.length === 0 ? '当前报告中暂无风险项。' : '当前筛选条件下暂无风险项。'}
           </p>
         ) : (
-          <div className="risk-radar-grid">
+          <motion.div className="risk-radar-grid" variants={listVariants} initial="hidden" animate="visible">
             {filteredRisks.map((risk, idx) => {
               const normalized = normalizeSeverity(risk.severity);
+              const ratio = normalized === 'high' ? severityRatioMap.high : normalized === 'medium' ? severityRatioMap.medium : normalized === 'low' ? severityRatioMap.low : 0;
               return (
-                <article key={`${risk.title}-${idx}`} className="risk-radar-card">
+                <motion.article key={`${risk.title}-${idx}`} className="risk-radar-card" variants={itemVariants}>
                   <div className="risk-radar-head">
                     <h3>{risk.title}</h3>
                     <span className={`severity-pill severity-pill-${normalized}`}>{severityLabel(risk.severity)}</span>
+                  </div>
+                  <div className="risk-severity-track" aria-hidden="true">
+                    <span className={`risk-severity-fill risk-severity-fill-${normalized}`} style={{ width: `${Math.max(8, ratio)}%` }} />
                   </div>
                   <p>
                     <strong>证据片段：</strong>
@@ -138,10 +172,10 @@ function RiskRadarPage() {
                     <strong>修改建议：</strong>
                     {risk.suggestion}
                   </p>
-                </article>
+                </motion.article>
               );
             })}
-          </div>
+          </motion.div>
         )}
       </section>
 
@@ -157,7 +191,7 @@ function RiskRadarPage() {
           </ol>
         )}
       </section>
-    </main>
+    </motion.main>
   );
 }
 
